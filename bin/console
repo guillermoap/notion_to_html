@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'dotenv/load'
+require 'notion_to_html'
+
+# You can add fixtures and/or initialization code here to make experimenting
+# with your gem easier. You can also use a different console, if you like.
+NotionToHtml.configure do |config|
+  config.notion_api_token = ENV['NOTION_API_TOKEN']
+  config.notion_database_id = ENV['NOTION_DATABASE_ID']
+end
+
+require 'irb'
+IRB.start(__FILE__)

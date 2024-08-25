@@ -1,0 +1,15 @@
+.DS_Store
+.bundle/
+.byebug_history
+.env
+.yardoc
+_yardoc/
+coverage/
+doc/
+pkg/
+spec/reports/
+tmp/
+
+# rspec failure tracking
+.rspec_status
+*.gem

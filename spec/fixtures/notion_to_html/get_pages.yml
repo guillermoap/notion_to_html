@@ -1,0 +1,60 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.notion.com/v1/databases/ba3fd6452cf24e4495be8aa95e27899d/query
+    body:
+      encoding: UTF-8
+      string: '{"sorts":[{"property":"published","direction":"descending"}],"filter":{"and":[{"property":"public","checkbox":{"equals":true}},{"property":"tags","multi_select":{"contains":"test"}}]},"page_size":10}'
+    headers:
+      Accept:
+      - application/json; charset=utf-8
+      User-Agent:
+      - Notion Ruby Client/1.2.2
+      Authorization:
+      - Bearer <NOTION_API_TOKEN>
+      Notion-Version:
+      - '2022-02-22'
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 10 Aug 2024 07:48:52 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cf-Ray:
+      - 8b0e62d02b1e1e7b-EZE
+      Cf-Cache-Status:
+      - DYNAMIC
+      Etag:
+      - W/"70e-LOHygezHLjpU/fVFeKMxe09lkI4"
+      Vary:
+      - Accept-Encoding
+      X-Notion-Request-Id:
+      - 0e92aedd-bf0e-4892-a92c-e49f9b92eb8a
+      X-Powered-By:
+      - Express
+      Set-Cookie:
+      - __cf_bm=YiI4xVeDTrf78LyGwkggatas8jTnidKc1XNwU87yTOU-1723276132-1.0.1.1-Kqv2LME6esZ0ATcAZK8PO11vapsRdABnrKGMkUhb3v8Msv26uWvQmb67LSsxDU8M.p_k3eKT0YwN.aSe3ixc8g;
+        path=/; expires=Sat, 10-Aug-24 08:18:52 GMT; domain=.notion.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=E.9uICC5pkyu0g3TwAtHysnxMfaiCBhIe4Lrrxu9YNg-1723276132780-0.0.1.1-604800000;
+        path=/; domain=.notion.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJvYmplY3QiOiJsaXN0IiwicmVzdWx0cyI6W3sib2JqZWN0IjoicGFnZSIsImlkIjoiMzczZWViYzgtYmNkNy00OTkyLWExYjMtMTc0ZDM5YTZlNmQ0IiwiY3JlYXRlZF90aW1lIjoiMjAyMy0wNS0wNlQwNDo1MzowMC4wMDBaIiwibGFzdF9lZGl0ZWRfdGltZSI6IjIwMjQtMDgtMTBUMDY6MDI6MDAuMDAwWiIsImNyZWF0ZWRfYnkiOnsib2JqZWN0IjoidXNlciIsImlkIjoiYjM3MjQ2YzctMTJkMi00N2I1LTgyOWEtNmYyMTE2YzEzYzRlIn0sImxhc3RfZWRpdGVkX2J5Ijp7Im9iamVjdCI6InVzZXIiLCJpZCI6ImIzNzI0NmM3LTEyZDItNDdiNS04MjlhLTZmMjExNmMxM2M0ZSJ9LCJjb3ZlciI6eyJ0eXBlIjoiZXh0ZXJuYWwiLCJleHRlcm5hbCI6eyJ1cmwiOiJodHRwczovL3d3dy5ub3Rpb24uc28vaW1hZ2VzL3BhZ2UtY292ZXIvbWV0X3NpbGtfa2FzaGFuX2NhcnBldC5qcGcifX0sImljb24iOnsidHlwZSI6ImVtb2ppIiwiZW1vamkiOiLwn5OSIn0sInBhcmVudCI6eyJ0eXBlIjoiZGF0YWJhc2VfaWQiLCJkYXRhYmFzZV9pZCI6ImJhM2ZkNjQ1LTJjZjItNGU0NC05NWJlLThhYTk1ZTI3ODk5ZCJ9LCJhcmNoaXZlZCI6ZmFsc2UsImluX3RyYXNoIjpmYWxzZSwicHJvcGVydGllcyI6eyJ0YWdzIjp7ImlkIjoiVCUzQVQlNUQiLCJ0eXBlIjoibXVsdGlfc2VsZWN0IiwibXVsdGlfc2VsZWN0IjpbeyJpZCI6ImRiMTk2ODU0LTZkOWMtNDY1NS1iNzIxLTBkMjE5OWE2NjFiNCIsIm5hbWUiOiJ3ZWIiLCJjb2xvciI6ImdyZWVuIn0seyJpZCI6IjQ0ZTFiM2Y2LTBiNWQtNDM0Yy1hYmJmLWM3YzA3ZTM3N2QyNiIsIm5hbWUiOiJ0ZXN0IiwiY29sb3IiOiJibHVlIn1dfSwicHVibGlzaGVkIjp7ImlkIjoiJTVCc3ZVIiwidHlwZSI6ImRhdGUiLCJkYXRlIjp7InN0YXJ0IjoiMjAyMy0wNS0wNiIsImVuZCI6bnVsbCwidGltZV96b25lIjpudWxsfX0sImRlc2NyaXB0aW9uIjp7ImlkIjoiYnolNjAlNUMiLCJ0eXBlIjoicmljaF90ZXh0IiwicmljaF90ZXh0IjpbXX0sInNsdWciOnsiaWQiOiIlN0JnUyU2MCIsInR5cGUiOiJyaWNoX3RleHQiLCJyaWNoX3RleHQiOlt7InR5cGUiOiJ0ZXh0IiwidGV4dCI6eyJjb250ZW50IjoidGVzdC1hcnRpY2xlIiwibGluayI6bnVsbH0sImFubm90YXRpb25zIjp7ImJvbGQiOmZhbHNlLCJpdGFsaWMiOmZhbHNlLCJzdHJpa2V0aHJvdWdoIjpmYWxzZSwidW5kZXJsaW5lIjpmYWxzZSwiY29kZSI6ZmFsc2UsImNvbG9yIjoiZGVmYXVsdCJ9LCJwbGFpbl90ZXh0IjoidGVzdC1hcnRpY2xlIiwiaHJlZiI6bnVsbH1dfSwicHVibGljIjp7ImlkIjoiJTdDa1prIiwidHlwZSI6ImNoZWNrYm94IiwiY2hlY2tib3giOnRydWV9LCJuYW1lIjp7ImlkIjoidGl0bGUiLCJ0eXBlIjoidGl0bGUiLCJ0aXRsZSI6W3sidHlwZSI6InRleHQiLCJ0ZXh0Ijp7ImNvbnRlbnQiOiJUZXN0IiwibGluayI6bnVsbH0sImFubm90YXRpb25zIjp7ImJvbGQiOmZhbHNlLCJpdGFsaWMiOmZhbHNlLCJzdHJpa2V0aHJvdWdoIjpmYWxzZSwidW5kZXJsaW5lIjpmYWxzZSwiY29kZSI6ZmFsc2UsImNvbG9yIjoiZGVmYXVsdCJ9LCJwbGFpbl90ZXh0IjoiVGVzdCIsImhyZWYiOm51bGx9XX19LCJ1cmwiOiJodHRwczovL3d3dy5ub3Rpb24uc28vVGVzdC0zNzNlZWJjOGJjZDc0OTkyYTFiMzE3NGQzOWE2ZTZkNCIsInB1YmxpY191cmwiOm51bGx9XSwibmV4dF9jdXJzb3IiOm51bGwsImhhc19tb3JlIjpmYWxzZSwidHlwZSI6InBhZ2Vfb3JfZGF0YWJhc2UiLCJwYWdlX29yX2RhdGFiYXNlIjp7fSwicmVxdWVzdF9pZCI6IjBlOTJhZWRkLWJmMGUtNDg5Mi1hOTJjLWU0OWY5YjkyZWI4YSJ9
+  recorded_at: Sat, 10 Aug 2024 07:48:52 GMT
+recorded_with: VCR 6.2.0
