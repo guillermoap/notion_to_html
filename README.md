@@ -50,7 +50,7 @@ gem install notion_to_html
 ```
 ## Dependencies
 NotionToHtml uses [tailwindcss](https://tailwindcss.com/) classes to define a default styling that mimics Notion's own styling, so make sure to inlcude it in your application.
-If you wish to use something else you can always override the default styling provided, see []() for more details.
+If you wish to use something else you can always override the default styling provided, see [Customizing styles](#customizing-styles) for more details.
 
 ## Setup
 This gem is currently very opinionated on how it expects the Notion database to be defined. If you wish to customize this you can override the methods defined in [NotionToHtml::Service](./lib/notion_to_html/service.rb).
