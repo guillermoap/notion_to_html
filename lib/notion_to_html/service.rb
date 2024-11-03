@@ -10,10 +10,12 @@ module NotionToHtml
   class Service
     class << self
       # Generates the default query for fetching pages
+      # @param name [String, nil] The name to filter pages by, or nil to not filter
+      # @param description [String, nil] The description to filter pages by, or nil not filter
       # @param tag [String, nil] The tag to filter pages by, or nil to include all tags
       # @param slug [String, nil] The slug to filter pages by, or nil to include all slugs
       # @return [Array<Hash>] The default query to be used in the database query
-      def default_query(tag: nil, slug: nil)
+      def default_query(name: nil, description: nil, tag: nil, slug: nil)
         query = [
           {
             property: 'public',
@@ -28,6 +30,24 @@ module NotionToHtml
             property: 'slug',
             rich_text: {
               equals: slug
+            }
+          })
+        end
+
+        if name
+          query.push({
+            property: 'name',
+            rich_text: {
+              contains: name
+            }
+          })
+        end
+
+        if description
+          query.push({
+            property: 'description',
+            rich_text: {
+              contains: description
             }
           })
         end
@@ -54,12 +74,20 @@ module NotionToHtml
       end
 
       # Fetches a list of pages from Notion based on provided filters
+      # @param name [String, nil] The name to filter pages by, or nil to not filter
+      # @param description [String, nil] The description to filter pages by, or nil not filter
       # @param tag [String, nil] The tag to filter pages by, or nil to include all tags
       # @param slug [String, nil] The slug to filter pages by, or nil to include all slugs
       # @param page_size [Integer] The number of pages to fetch per page
       # @return [Array<NotionToHtml::BasePage>] The list of pages as BasePage objects
-      def get_pages(tag: nil, slug: nil, page_size: 10)
-        __get_pages(tag: tag, slug: slug, page_size: page_size)['results'].map do |page|
+      def get_pages(name: nil, description: nil, tag: nil, slug: nil, page_size: 10)
+        __get_pages(
+          name: name,
+          description: description,
+          tag: tag,
+          slug: slug,
+          page_size: page_size
+        )['results'].map do |page|
           NotionToHtml::BasePage.new(page)
         end
       end
@@ -123,18 +151,20 @@ module NotionToHtml
       end
 
       # Retrieves pages from Notion using the client
+      # @param name [String, nil] The name to filter pages by, or nil to not filter
+      # @param description [String, nil] The description to filter pages by, or nil not filter
       # @param tag [String, nil] The tag to filter pages by
       # @param slug [String, nil] The slug to filter pages by
       # @param page_size [Integer] The number of pages to fetch per page
       # @return [Hash] The response from the Notion API containing pages
-      def __get_pages(tag: nil, slug: nil, page_size: 10)
+      def __get_pages(name: nil, description: nil, tag: nil, slug: nil, page_size: 10)
         client.database_query(
           database_id: NotionToHtml.config.notion_database_id,
           sorts: [
             default_sorting
           ],
           filter: {
-            'and': default_query(tag: tag, slug: slug)
+            'and': default_query(name: name, description: description, tag: tag, slug: slug)
           },
           page_size: page_size
         )
