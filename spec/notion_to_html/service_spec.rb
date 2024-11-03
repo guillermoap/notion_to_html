@@ -14,7 +14,7 @@ RSpec.describe NotionToHtml::Service do
   end
 
   describe '#default_query' do
-    context 'when no slug or tag is provided' do
+    context 'when no name or description or slug or tag is provided' do
       it 'returns the default query' do
         expected_query = [
           {
@@ -40,6 +40,40 @@ RSpec.describe NotionToHtml::Service do
           }
         ]
         expect(service.default_query(slug: slug)).to eq(expected_query)
+      end
+    end
+
+    context 'when a name is provided' do
+      it 'includes the name in the query' do
+        name = 'example-name'
+        expected_query = [
+          {
+            property: 'public',
+            checkbox: { equals: true }
+          },
+          {
+            property: 'name',
+            rich_text: { contains: name }
+          }
+        ]
+        expect(service.default_query(name: name)).to eq(expected_query)
+      end
+    end
+
+    context 'when a description is provided' do
+      it 'includes the description in the query' do
+        description = 'example-description'
+        expected_query = [
+          {
+            property: 'public',
+            checkbox: { equals: true }
+          },
+          {
+            property: 'description',
+            rich_text: { contains: description }
+          }
+        ]
+        expect(service.default_query(description: description)).to eq(expected_query)
       end
     end
 
@@ -79,6 +113,28 @@ RSpec.describe NotionToHtml::Service do
           }
         ]
         expect(service.default_query(slug: slug, tag: tag)).to eq(expected_query)
+      end
+    end
+
+    context 'when both name and description are provided' do
+      it 'includes both the name and description in the query' do
+        name = 'example-name'
+        description = 'example-description'
+        expected_query = [
+          {
+            property: 'public',
+            checkbox: { equals: true }
+          },
+          {
+            property: 'name',
+            rich_text: { contains: name }
+          },
+          {
+            property: 'description',
+            rich_text: { contains: description }
+          }
+        ]
+        expect(service.default_query(name: name, description: description)).to eq(expected_query)
       end
     end
   end
