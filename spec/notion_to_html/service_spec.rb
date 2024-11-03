@@ -35,8 +35,12 @@ RSpec.describe NotionToHtml::Service do
             checkbox: { equals: true }
           },
           {
-            property: 'slug',
-            rich_text: { equals: slug }
+            or: [
+              {
+                property: 'slug',
+                rich_text: { equals: slug }
+              }
+            ]
           }
         ]
         expect(service.default_query(slug: slug)).to eq(expected_query)
@@ -52,8 +56,12 @@ RSpec.describe NotionToHtml::Service do
             checkbox: { equals: true }
           },
           {
-            property: 'name',
-            title: { contains: name }
+            or: [
+              {
+                property: 'name',
+                title: { contains: name }
+              }
+            ]
           }
         ]
         expect(service.default_query(name: name)).to eq(expected_query)
@@ -69,8 +77,12 @@ RSpec.describe NotionToHtml::Service do
             checkbox: { equals: true }
           },
           {
-            property: 'description',
-            rich_text: { contains: description }
+            or: [
+              {
+                property: 'description',
+                rich_text: { contains: description }
+              }
+            ]
           }
         ]
         expect(service.default_query(description: description)).to eq(expected_query)
@@ -104,12 +116,16 @@ RSpec.describe NotionToHtml::Service do
             checkbox: { equals: true }
           },
           {
-            property: 'slug',
-            rich_text: { equals: slug }
-          },
-          {
             property: 'tags',
             multi_select: { contains: tag }
+          },
+          {
+            or: [
+              {
+                property: 'slug',
+                rich_text: { equals: slug }
+              }
+            ]
           }
         ]
         expect(service.default_query(slug: slug, tag: tag)).to eq(expected_query)
@@ -126,12 +142,16 @@ RSpec.describe NotionToHtml::Service do
             checkbox: { equals: true }
           },
           {
-            property: 'name',
-            title: { contains: name }
-          },
-          {
-            property: 'description',
-            rich_text: { contains: description }
+            or: [
+              {
+                property: 'name',
+                title: { contains: name }
+              },
+              {
+                property: 'description',
+                rich_text: { contains: description }
+              }
+            ]
           }
         ]
         expect(service.default_query(name: name, description: description)).to eq(expected_query)

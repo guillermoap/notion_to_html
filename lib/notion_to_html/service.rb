@@ -24,33 +24,7 @@ module NotionToHtml
             }
           }
         ]
-
-        if slug
-          query.push({
-            property: 'slug',
-            rich_text: {
-              equals: slug
-            }
-          })
-        end
-
-        if name
-          query.push({
-            property: 'name',
-            title: {
-              contains: name
-            }
-          })
-        end
-
-        if description
-          query.push({
-            property: 'description',
-            rich_text: {
-              contains: description
-            }
-          })
-        end
+        or_query = []
 
         if tag
           query.push({
@@ -61,6 +35,34 @@ module NotionToHtml
           })
         end
 
+        if slug
+          or_query.push({
+            property: 'slug',
+            rich_text: {
+              equals: slug
+            }
+          })
+        end
+
+        if name
+          or_query.push({
+            property: 'name',
+            title: {
+              contains: name
+            }
+          })
+        end
+
+        if description
+          or_query.push({
+            property: 'description',
+            rich_text: {
+              contains: description
+            }
+          })
+        end
+
+        query.push('or': or_query) unless or_query.blank?
         query
       end
 
