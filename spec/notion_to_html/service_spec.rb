@@ -53,7 +53,7 @@ RSpec.describe NotionToHtml::Service do
           },
           {
             property: 'name',
-            contains: name
+            title: { contains: name }
           }
         ]
         expect(service.default_query(name: name)).to eq(expected_query)
@@ -127,7 +127,7 @@ RSpec.describe NotionToHtml::Service do
           },
           {
             property: 'name',
-            contains: name
+            title: { contains: name }
           },
           {
             property: 'description',
