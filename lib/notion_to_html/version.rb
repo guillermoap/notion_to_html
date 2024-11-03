@@ -2,5 +2,5 @@
 
 module NotionToHtml
   # The current version of the NotionToHtml gem.
-  VERSION = '1.1.2'
+  VERSION = '1.1.3'
 end
