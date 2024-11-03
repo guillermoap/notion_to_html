@@ -37,9 +37,7 @@ module NotionToHtml
         if name
           query.push({
             property: 'name',
-            rich_text: {
-              contains: name
-            }
+            contains: name
           })
         end
 
