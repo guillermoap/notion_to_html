@@ -149,7 +149,13 @@ module NotionToHtml
       # Accessor for the client
       # @return [Notion::Client] The client instance used to interact with the Notion API
       def client
-        @client ||= Notion::Client.new(token: NotionToHtml.config.notion_api_token)
+        @client ||= Notion::Client.new(
+          token: NotionToHtml.config.notion_api_token,
+          timeout: NotionToHtml.config.notion_timeout,
+          default_page_size: NotionToHtml.config.notion_default_page_size,
+          default_max_retries: NotionToHtml.config.notion_default_max_retries,
+          default_retry_after: NotionToHtml.config.notion_default_retry_after
+        )
       end
 
       # Retrieves pages from Notion using the client
