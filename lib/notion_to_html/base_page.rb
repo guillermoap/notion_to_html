@@ -87,7 +87,7 @@ module NotionToHtml
     def process_properties
       @tags = @properties['tags']
       @title = @properties.dig('name', 'title')
-      @slug = @properties['slug']
+      @slug = @properties.dig('slug', 'rich_text').first['plain_text']
       @published_at = @properties.dig('published', 'date', 'start')
       @description = @properties.dig('description', 'rich_text')
     end
