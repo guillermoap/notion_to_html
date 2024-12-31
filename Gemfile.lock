@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    notion_to_html (1.1.6)
+    notion_to_html (1.2.0)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
       dry-configurable (~> 1.2)
