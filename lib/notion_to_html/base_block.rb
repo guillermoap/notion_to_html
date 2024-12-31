@@ -36,7 +36,7 @@ module NotionToHtml
     attr_accessor :siblings
 
     # The list of block types that can be rendered.
-    BLOCK_TYPES = %w[
+    BLOCK_TYPES = %i[
       paragraph
       heading_1
       heading_2
