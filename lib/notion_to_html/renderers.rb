@@ -127,7 +127,7 @@ module NotionToHtml
     def render_date(date, options = {})
       # TODO: handle end and time zone
       # date=end=, start=2023-07-13, time_zone=, id=%5BsvU, type=date
-      tag.p(date.to_date.to_fs(:long), class: css_class_for(:date, options))
+      tag.p(date.to_date.to_fs(:long), **options, class: css_class_for(:date, options))
     end
 
     # Renders a heading 1 block.

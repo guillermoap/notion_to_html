@@ -68,35 +68,43 @@ module NotionToHtml
       @properties = data[@type]
     end
 
+    BLOCK_TYPES.each do |block|
+      define_method("class_for_#{block}") { |options| options.dig(block, :class) }
+      define_method("data_for_#{block}") { |options| options.dig(block, :data) }
+    end
+
     # Renders the block based on its type.
     # @param options [Hash] Additional options for rendering the block.
     # @return [String] The rendered block as HTML.
     def render(options = {})
       case @type
       when 'paragraph'
-        render_paragraph(rich_text, class: options[:paragraph])
+        render_paragraph(rich_text, class: class_for_paragraph(options), data: data_for_paragraph(options))
       when 'heading_1'
-        render_heading_1(rich_text, class: options[:heading_1])
+        render_heading_1(rich_text, class: class_for_heading_1(options), data: data_for_heading_1(options))
       when 'heading_2'
-        render_heading_2(rich_text, class: options[:heading_2])
+        render_heading_2(rich_text, class: class_for_heading_2(options), data: data_for_heading_2(options))
       when 'heading_3'
-        render_heading_3(rich_text, class: options[:heading_3])
+        render_heading_3(rich_text, class: class_for_heading_3(options), data: data_for_heading_3(options))
       when 'table_of_contents'
         render_table_of_contents
       when 'bulleted_list_item'
-        render_bulleted_list_item(rich_text, @siblings, @children, 0, class: options[:bulleted_list_item])
+        render_bulleted_list_item(rich_text, @siblings, @children, 0, class: class_for_bulleted_list_item(options),
+          data: data_for_bulleted_list_item(options))
       when 'numbered_list_item'
-        render_numbered_list_item(rich_text, @siblings, @children, 0, class: options[:numbered_list_item])
+        render_numbered_list_item(rich_text, @siblings, @children, 0, class: class_for_numbered_list_item(options),
+          data: data_for_numbered_list_item(options))
       when 'quote'
-        render_quote(rich_text, class: options[:quote])
+        render_quote(rich_text, class: class_for_quote(options), data: data_for_quote(options))
       when 'callout'
-        render_callout(rich_text, icon, class: options[:callout])
+        render_callout(rich_text, icon, class: class_for_callout(options), data: data_for_callout(options))
       when 'code'
-        render_code(rich_text, class: options[:code], language: @properties['language'])
+        render_code(rich_text, class: class_for_code(options), data: data_for_code(options),
+          language: @properties['language'])
       when 'image', 'embed'
-        render_image(*multi_media, class: options[:image])
+        render_image(*multi_media, class: class_for_image(options), data: data_for_image(options))
       when 'video'
-        render_video(*multi_media, class: options[:video])
+        render_video(*multi_media, class: class_for_video(options), data: data_for_video(options))
       else
         'Unsupported block'
       end

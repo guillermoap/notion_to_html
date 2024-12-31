@@ -12,10 +12,6 @@ Now you can use Notion to publish your pages directly to your Ruby web page with
 - [Installation](#installation)
 - [Dependencies](#dependencies)
 - [Setup](#setup)
-  - [Notion Integration](#notion-integration)
-    - [Create your integration in Notion](#create-your-integration-in-notion)
-    - [Get your API secret](#get-your-api-secret)
-    - [Give your integration page permissions](#give-your-integration-page-permissions)
 - [Configuration](#configuration)
 - [Usage](#usage)
   - [Rendering](#rendering)
@@ -23,6 +19,7 @@ Now you can use Notion to publish your pages directly to your Ruby web page with
     - [Specific Page](#specific-page)
     - [Customizing styles](#customizing-styles)
     - [Overriding default styles](#overriding-default-styles)
+    - [Adding data options](#adding-data-options)
   - [Querying](#querying)
     - [Filtering](#filtering)
     - [Sorting](#sorting)
@@ -65,46 +62,16 @@ By default the database should have the following structure:
 
 Once you have the database created you will have to setup a Notion Integration, so the Notion API can communicate with your database. For this you will have to follow the [Create Your Integration In Notion](https://developers.notion.com/docs/create-a-notion-integration#create-your-integration-in-notion) tutorial.
 
-If you wish to just quickly set it up, you can follow the relevant steps below, which are taken from that tutorial.
+If you wish to just quickly set it up, you can follow the [notion integration docs](/docs/notion_setup.md), which are taken from that tutorial.
 
-### Notion Integration
-#### Create your integration in Notion
-The first step to building any integration (internal or public) is to create a new integration in Notion’s integrations dashboard: <https://www.notion.com/my-integrations>.
-1. Click `+ New Integration`.
-![Create integration](/docs/images/new_integration.png)
-2. Enter the integration name and select the associated workspace for the new integration.
-![Select workspace](/docs/images/new_integration_select_workspace.png)
-
-#### Get your API secret
-API requests require an API secret to be successfully authenticated.
-1. Visit the Configuration tab to get your integration’s API secret (or “Internal Integration Secret”).
-![API secret](/docs/images/get_api_key.png)
-**Remember to keep your API secret a secret!**
-Any value used to authenticate API requests should always be kept secret. Use environment variables and avoid committing sensitive data to your version control history.
-If you do accidentally expose it, remember to “refresh” your secret.
-
-#### Give your integration page permissions
-The database that we’re about to create will be added to a parent Notion page in your workspace. For your integration to interact with the page, it needs explicit permission to read/write to that specific Notion page.
-
-To give the integration permission, you will need to:
-1. Go to the page with the database you created above.
-2. Click on the ... More menu in the top-right corner of the page.
-3. Scroll down to + Add Connections.
-4. Search for your integration and select it.
-5. Confirm the integration can access the page and all of its child pages.
-![alt text](/docs/images/permissions.gif)
-6. You can then limit the integrations permission to just `Read Contents`:
-![alt text](/docs/images/permissions.png)
-
-Now you're finally ready to config the gem!
-
-### Configuration
+## Configuration
 To configure NotionToHtml, you need to set up your Notion API token and database ID.
 If you're using Rails add an initializer file in your Rails application, such as `config/initializers/notion_to_html.rb`, and include the following configuration block:
 ```ruby
 NotionToHtml.configure do |config|
   config.notion_api_token = 'NOTION_API_TOKEN'
   config.notion_database_id = 'NOTION_DATABASE_ID'
+  config.cache_store = Rails.cache
 end
 ```
 
@@ -119,6 +86,8 @@ To get these values:
 **Remember to keep these values secret!**
 
 Now you should be all setup!
+
+For the full list of configuration settings, see [the configuration module](./lib/notion_to_html.rb).
 
 ## Usage
 ### Rendering
@@ -151,11 +120,11 @@ NotionToHtml::Service.get_page(page_id)
 You can also specify classes for each type of supported block like this:
 ```ruby
 NotionToHtml::Service.get_page(page_id).formatted_blocks(
-  paragraph: 'text-lg', 
-  heading_1: 'text-3xl md:text-4xl font-bold', 
-  heading_2: 'text-white', 
-  heading_3: 'font-bold', 
-  quote: 'italic', 
+  paragraph: { class: 'text-lg' }, 
+  heading_1: { class: 'text-3xl md:text-4xl font-bold' }, 
+  heading_2: { class: 'text-white' }, 
+  heading_3: { class: 'font-bold' }, 
+  quote: { class: 'italic' }, 
 )
 ```
 #### Overriding default styles
@@ -169,17 +138,29 @@ It also works for `formatted_blocks`:
 NotionToHtml::Service.get_page(page_id)
   .formatted_blocks(
     paragraph: { class: 'text-lg', override_class: true }, 
-    quote: 'italic' 
+    quote: { class: 'italic' } 
+)
+```
+#### Adding data options
+If you want to integrate stimulus you can add data properties by specifying the `data:` option when calling the formatter:
+```ruby
+NotionToHtml::Service.get_page(page_id).formatted_blocks(
+  paragraph: { class: 'text-lg', data: { controller: 'test' } } }, 
+  heading_1: { class: 'text-3xl md:text-4xl font-bold' }, 
+  heading_2: { class: 'text-white', data: { controller: 'click' } }, 
+  heading_3: { class: 'font-bold' }, 
+  quote: { class: 'italic' }, 
 )
 ```
 ### Querying
 By default the `NotionToHtml::Service` is setup to follow the database structure sepcified above. This way it will only return pages that have been marked as `public`.
 
 #### Filtering
-You can filter the results by specifying a tag and/or a specific slug:
+You can filter the results by specifying a name, description, tag and/or a specific slug:
 ```ruby
-NotionToHtml::Service.get_pages(tag: 'web', slug: 'test-slug')
+NotionToHtml::Service.get_pages(name: 'Ruby', description: 'ruby on rails', tag: 'web', slug: 'test-slug')
 ```
+This will return all the pages that have at least one of those specified attributes.
 #### Sorting
 The default sorting is by the `published` Date column in the database
 
