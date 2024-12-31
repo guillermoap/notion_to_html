@@ -71,6 +71,7 @@ If you're using Rails add an initializer file in your Rails application, such as
 NotionToHtml.configure do |config|
   config.notion_api_token = 'NOTION_API_TOKEN'
   config.notion_database_id = 'NOTION_DATABASE_ID'
+  config.cache_store = Rails.cache
 end
 ```
 
@@ -85,6 +86,8 @@ To get these values:
 **Remember to keep these values secret!**
 
 Now you should be all setup!
+
+For the full list of configuration settings, see [the configuration module](./lib/notion_to_html.rb).
 
 ## Usage
 ### Rendering
