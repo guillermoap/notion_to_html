@@ -163,7 +163,16 @@ RSpec.describe NotionToHtml::Renderers do
       expect(rendered_html).to have_selector('ul li.custom-class', text: 'List item')
       expect(rendered_html).not_to have_selector("ul.#{default_class} li", text: 'List item')
     end
+
+    it 'renders data attributes' do
+      html = render_bulleted_list_item(rich_text, [], [], 0, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('ul[data-controller="test"]')
+    end
   end
+
   describe '#render_code' do
     let(:rich_text) { [{ 'plain_text' => 'puts "Hello, world!"', 'annotations' => { 'code' => true } }] }
     let(:default_class) { described_class::DEFAULT_CSS_CLASSES[:code].gsub(' ', '.') }
@@ -192,7 +201,16 @@ RSpec.describe NotionToHtml::Renderers do
       expect(rendered_html).to have_selector('pre.custom-class', text: 'puts "Hello, world!"')
       expect(rendered_html).not_to have_selector("pre.#{default_class}", text: 'puts "Hello, world!"')
     end
+
+    it 'renders data attributes' do
+      html = render_code(rich_text, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('pre[data-controller="test"]')
+    end
   end
+
   describe '#render_callout' do
     let(:rich_text) { [{ 'plain_text' => 'A callout', 'annotations' => {} }] }
     let(:default_class) { described_class::DEFAULT_CSS_CLASSES[:callout].gsub(' ', '.') }
@@ -223,7 +241,17 @@ RSpec.describe NotionToHtml::Renderers do
 
       expect(rendered_html).to have_selector('div.custom-class.flex.p-8', text: 'A callout')
     end
+
+    it 'renders data attributes' do
+      options = { data: { controller: 'test' } }
+      html = render_callout(rich_text, '⚠️', options)
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('div[data-controller="test"]')
+    end
   end
+
   describe '#render_date' do
     let(:date) { Date.new(2023, 7, 13) }
     let(:default_class) { described_class::DEFAULT_CSS_CLASSES[:date].gsub(' ', '.') }
@@ -255,6 +283,14 @@ RSpec.describe NotionToHtml::Renderers do
 
       expect(rendered_html).to have_selector('p.custom-class.text-blue-500', text: 'July 13, 2023')
     end
+
+    it 'renders data attributes' do
+      html = render_date(date, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('p[data-controller="test"]')
+    end
   end
 
   describe '#render_heading_1' do
@@ -284,6 +320,14 @@ RSpec.describe NotionToHtml::Renderers do
 
       expect(rendered_html).to have_selector('h1.custom-class', text: 'Heading 1')
       expect(rendered_html).not_to have_selector("h1.#{default_class}", text: 'Heading 1')
+    end
+
+    it 'renders data attributes' do
+      html = render_heading_1(rich_text, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('h1[data-controller="test"]')
     end
   end
 
@@ -315,6 +359,14 @@ RSpec.describe NotionToHtml::Renderers do
       expect(rendered_html).to have_selector('h2.custom-class', text: 'Heading 2')
       expect(rendered_html).not_to have_selector("h2.#{default_class}", text: 'Heading 2')
     end
+
+    it 'renders data attributes' do
+      html = render_heading_2(rich_text, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('h2[data-controller="test"]')
+    end
   end
 
   describe '#render_heading_3' do
@@ -345,7 +397,16 @@ RSpec.describe NotionToHtml::Renderers do
       expect(rendered_html).to have_selector('h3.custom-class', text: 'Heading 3')
       expect(rendered_html).not_to have_selector("h3.#{default_class}", text: 'Heading 3')
     end
+
+    it 'renders data attributes' do
+      html = render_heading_3(rich_text, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('h3[data-controller="test"]')
+    end
   end
+
   describe '#render_image' do
     let(:caption) { [{ 'plain_text' => 'An image caption', 'annotations' => {} }] }
     let(:default_class) { described_class::DEFAULT_CSS_CLASSES[:image].gsub(' ', '.') }
@@ -375,6 +436,14 @@ RSpec.describe NotionToHtml::Renderers do
 
       expect(rendered_html).to have_selector('figure.custom-class')
       # TODO: When/if image has a default class add expect to test that it doesn't render when overriden
+    end
+
+    it 'renders data attributes' do
+      html = render_image('image_src.jpg', nil, caption, 'file', data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('figure[data-controller="test"]')
     end
   end
 
@@ -406,7 +475,16 @@ RSpec.describe NotionToHtml::Renderers do
       expect(rendered_html).to have_selector('ol li.custom-class', text: 'List item')
       expect(rendered_html).not_to have_selector("ol.#{default_class} li", text: 'List item')
     end
+
+    it 'renders data attributes' do
+      html = render_numbered_list_item(rich_text, [], [], 0, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('ol[data-controller="test"]')
+    end
   end
+
   describe '#render_paragraph' do
     let(:rich_text) { [{ 'plain_text' => 'Hello, world!', 'annotations' => { 'bold' => true } }] }
     let(:default_class) { described_class::DEFAULT_CSS_CLASSES[:paragraph].gsub(' ', '.') }
@@ -436,7 +514,16 @@ RSpec.describe NotionToHtml::Renderers do
       expect(rendered_html).to have_selector('p.custom-class')
       # TODO: When/if paragraph has a default class add expect to test that it doesn't render when overriden
     end
+
+    it 'renders data attributes' do
+      html = render_paragraph(rich_text, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('p[data-controller="test"]')
+    end
   end
+
   describe '#render_quote' do
     let(:rich_text) { [{ 'plain_text' => 'A quote', 'annotations' => {} }] }
     let(:default_class) { described_class::DEFAULT_CSS_CLASSES[:quote].gsub(' ', '.') }
@@ -464,6 +551,14 @@ RSpec.describe NotionToHtml::Renderers do
 
       expect(rendered_html).to have_selector('cite p.custom-quote-class', text: 'A quote')
       expect(rendered_html).not_to have_selector("cite p.#{default_class}", text: 'A quote')
+    end
+
+    it 'renders data attributes' do
+      html = render_quote(rich_text, data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('cite p[data-controller="test"]')
     end
   end
 
@@ -499,6 +594,14 @@ RSpec.describe NotionToHtml::Renderers do
 
       expect(rendered_html).to have_selector('figure.custom-class')
       # TODO: When/if video has a default class add expect to test that it doesn't render when overriden
+    end
+
+    it 'renders data attributes' do
+      html = render_video('video_src.mp4', nil, caption, 'file', data: { controller: 'test' })
+
+      rendered_html = Capybara.string(html)
+
+      expect(rendered_html).to have_selector('figure[data-controller="test"]')
     end
   end
 end
