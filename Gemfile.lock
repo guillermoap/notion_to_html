@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    notion_to_html (1.1.5)
-      actionview (~> 7, >= 7.0.0)
-      activesupport (~> 7, >= 7.0.0)
+    notion_to_html (1.1.6)
+      actionview (>= 7.0.0)
+      activesupport (>= 7.0.0)
       dry-configurable (~> 1.2)
       notion-ruby-client (~> 1.2.2)
 
