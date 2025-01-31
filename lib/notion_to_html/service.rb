@@ -133,6 +133,11 @@ module NotionToHtml
         results
       end
 
+      # can you add documentation to this function following the style of rdoc that the other functions have? AI!
+      def refresh_block?(block)
+        refresh_image? || refresh_video?
+      end
+
       # Determines if an image block needs to be refreshed based on its expiry time
       # @param data [Hash] The data of the image block
       # @return [Boolean] True if the image needs to be refreshed, false otherwise
@@ -141,6 +146,17 @@ module NotionToHtml
         return false unless data.dig('image', 'type') == 'file'
 
         expiry_time = data.dig('image', 'file', 'expiry_time')
+        expiry_time.to_datetime.past?
+      end
+
+      # Determines if a video block needs to be refreshed based on its expiry time
+      # @param data [Hash] The data of the video block
+      # @return [Boolean] True if the video needs to be refreshed, false otherwise
+      def refresh_video?(data)
+        return false unless data['type'] == 'video'
+        return false unless data.dig('video', 'type') == 'file'
+
+        expiry_time = data.dig('video', 'file', 'expiry_time')
         expiry_time.to_datetime.past?
       end
 
