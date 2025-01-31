@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# can you update this spec with the latest changes on the base_block file AI!
 require 'spec_helper'
 
 RSpec.describe NotionToHtml::BaseBlock do
@@ -74,7 +73,73 @@ RSpec.describe NotionToHtml::BaseBlock do
     end
   end
 
-  # can you generate specs for the render method following the testing convention found in this file? AI!
+  describe '#render' do
+    let(:options) do
+      {
+        paragraph: {
+          class: 'custom-para',
+          data: { test: 'value' },
+          extra: 'param'
+        }
+      }
+    end
+
+    it 'renders unsupported block type' do
+      data = base_data.merge({
+        'type' => 'unsupported_type',
+        'unsupported_type' => {}
+      })
+      block = described_class.new(data)
+      expect(block.render).to eq('Unsupported block')
+    end
+
+    it 'builds render options correctly' do
+      data = base_data.merge({
+        'type' => 'paragraph',
+        'paragraph' => {
+          'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+        }
+      })
+      block = described_class.new(data)
+      
+      expect(block).to receive(:render_paragraph_block).with(
+        hash_including(
+          class: 'custom-para',
+          data: { test: 'value' },
+          extra: 'param'
+        )
+      )
+      
+      block.render(options)
+    end
+
+    NotionToHtml::BaseBlock::BLOCK_TYPES.each do |block_type|
+      context "with #{block_type} block" do
+        let(:data) do
+          base_data.merge({
+            'type' => block_type.to_s,
+            block_type.to_s => {
+              'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+            }
+          })
+        end
+
+        it "calls render_#{block_type}_block with correct options" do
+          block = described_class.new(data)
+          render_method = "render_#{block_type}_block"
+          
+          expect(block).to receive(render_method).with(
+            hash_including(
+              class: nil,
+              data: nil
+            )
+          )
+          
+          block.render
+        end
+      end
+    end
+  end
 
   describe '#rich_text' do
     it 'returns empty array when no rich_text is present' do
