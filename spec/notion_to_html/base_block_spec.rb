@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# can you update this spec with the latest changes on the base_block file AI!
 require 'spec_helper'
 
 RSpec.describe NotionToHtml::BaseBlock do
