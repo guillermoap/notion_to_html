@@ -74,6 +74,8 @@ RSpec.describe NotionToHtml::BaseBlock do
     end
   end
 
+  # can you generate specs for the render method following the testing convention found in this file? AI!
+
   describe '#rich_text' do
     it 'returns empty array when no rich_text is present' do
       data = base_data.merge({
