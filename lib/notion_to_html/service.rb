@@ -133,9 +133,11 @@ module NotionToHtml
         results
       end
 
-      # can you add documentation to this function following the style of rdoc that the other functions have? AI!
+      # Determines if a block needs to be refreshed based on its type and expiry time
+      # @param block [Hash] The block data to check
+      # @return [Boolean] True if the block needs to be refreshed, false otherwise
       def refresh_block?(block)
-        refresh_image? || refresh_video?
+        refresh_image?(block) || refresh_video?(block)
       end
 
       # Determines if an image block needs to be refreshed based on its expiry time
