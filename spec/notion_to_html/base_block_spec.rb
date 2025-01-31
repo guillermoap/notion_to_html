@@ -101,18 +101,16 @@ RSpec.describe NotionToHtml::BaseBlock do
         }
       })
       block = described_class.new(data)
-      
-      expect(block).to receive(:render_paragraph_block).with(
+
+      expect(block.send(:build_render_options, options)).to match(
         hash_including(
           class: 'custom-para',
           data: { test: 'value' },
           extra: 'param'
         )
       )
-      
-      block.render(options)
     end
-
+    # can you create the test for each block type instead of doing it dynamically AI!
     NotionToHtml::BaseBlock::BLOCK_TYPES.each do |block_type|
       context "with #{block_type} block" do
         let(:data) do
@@ -127,14 +125,14 @@ RSpec.describe NotionToHtml::BaseBlock do
         it "calls render_#{block_type}_block with correct options" do
           block = described_class.new(data)
           render_method = "render_#{block_type}_block"
-          
+
           expect(block).to receive(render_method).with(
             hash_including(
               class: nil,
               data: nil
             )
           )
-          
+
           block.render
         end
       end
