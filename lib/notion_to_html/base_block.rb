@@ -73,66 +73,92 @@ module NotionToHtml
       define_method("data_for_#{block}") { |options| options.dig(block, :data) }
     end
 
-    # can you refactor render to make it more readable? AI!
-
     # Renders the block based on its type.
     # @param options [Hash] Additional options for rendering the block.
     # @return [String] The rendered block as HTML.
     def render(options = {})
-      remaining_options = options.dig(@type).except(:class, :data)
-      case @type
-      when 'paragraph'
-        render_paragraph(
-          rich_text, class: class_for_paragraph(options), data: data_for_paragraph(options), **remaining_options
-        )
-      when 'heading_1'
-        render_heading_1(
-          rich_text, class: class_for_heading_1(options), data: data_for_heading_1(options), **remaining_options
-        )
-      when 'heading_2'
-        render_heading_2(
-          rich_text, class: class_for_heading_2(options), data: data_for_heading_2(options), **remaining_options
-        )
-      when 'heading_3'
-        render_heading_3(
-          rich_text, class: class_for_heading_3(options), data: data_for_heading_3(options), **remaining_options
-        )
-      when 'table_of_contents'
-        render_table_of_contents
-      when 'bulleted_list_item'
-        render_bulleted_list_item(
-          rich_text, @siblings, @children, 0, class: class_for_bulleted_list_item(options),
-          data: data_for_bulleted_list_item(options), **remaining_options
-        )
-      when 'numbered_list_item'
-        render_numbered_list_item(
-          rich_text, @siblings, @children, 0, class: class_for_numbered_list_item(options),
-          data: data_for_numbered_list_item(options), **remaining_options
-        )
-      when 'quote'
-        render_quote(
-          rich_text, class: class_for_quote(options), data: data_for_quote(options), **remaining_options
-        )
-      when 'callout'
-        render_callout(
-          rich_text, icon, class: class_for_callout(options), data: data_for_callout(options), **remaining_options
-        )
-      when 'code'
-        render_code(
-          rich_text, class: class_for_code(options), data: data_for_code(options), **remaining_options,
-          language: @properties['language']
-        )
-      when 'image', 'embed'
-        render_image(
-          *multi_media, class: class_for_image(options), data: data_for_image(options), **remaining_options
-        )
-      when 'video'
-        render_video(
-          *multi_media, class: class_for_video(options), data: data_for_video(options), **remaining_options
-        )
-      else
-        'Unsupported block'
-      end
+      render_method = RENDERERS[@type]
+      return 'Unsupported block' unless render_method
+
+      send(render_method, build_render_options(options))
+    end
+
+    private
+
+    # Maps block types to their corresponding render methods
+    RENDERERS = {
+      'paragraph' => :render_paragraph_block,
+      'heading_1' => :render_heading_1_block,
+      'heading_2' => :render_heading_2_block,
+      'heading_3' => :render_heading_3_block,
+      'table_of_contents' => :render_table_of_contents_block,
+      'bulleted_list_item' => :render_bulleted_list_item_block,
+      'numbered_list_item' => :render_numbered_list_item_block,
+      'quote' => :render_quote_block,
+      'callout' => :render_callout_block,
+      'code' => :render_code_block,
+      'image' => :render_image_block,
+      'embed' => :render_image_block,
+      'video' => :render_video_block
+    }.freeze
+
+    # Builds render options for a block type
+    # @param options [Hash] The original options hash
+    # @return [Hash] Processed options for rendering
+    def build_render_options(options)
+      {
+        class: send("class_for_#{@type}", options),
+        data: send("data_for_#{@type}", options),
+        **options.dig(@type)&.except(:class, :data).to_h
+      }
+    end
+
+    def render_paragraph_block(options)
+      render_paragraph(rich_text, **options)
+    end
+
+    def render_heading_1_block(options)
+      render_heading_1(rich_text, **options)
+    end
+
+    def render_heading_2_block(options)
+      render_heading_2(rich_text, **options)
+    end
+
+    def render_heading_3_block(options)
+      render_heading_3(rich_text, **options)
+    end
+
+    def render_table_of_contents_block(_options)
+      render_table_of_contents
+    end
+
+    def render_bulleted_list_item_block(options)
+      render_bulleted_list_item(rich_text, @siblings, @children, 0, **options)
+    end
+
+    def render_numbered_list_item_block(options)
+      render_numbered_list_item(rich_text, @siblings, @children, 0, **options)
+    end
+
+    def render_quote_block(options)
+      render_quote(rich_text, **options)
+    end
+
+    def render_callout_block(options)
+      render_callout(rich_text, icon, **options)
+    end
+
+    def render_code_block(options)
+      render_code(rich_text, **options.merge(language: @properties['language']))
+    end
+
+    def render_image_block(options)
+      render_image(*multi_media, **options)
+    end
+
+    def render_video_block(options)
+      render_video(*multi_media, **options)
     end
 
     # Retrieves the rich text content of the block.
