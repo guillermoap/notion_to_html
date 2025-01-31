@@ -68,10 +68,15 @@ module NotionToHtml
       @properties = data[@type]
     end
 
+    RENDERERS = {}.with_indifferent_access
+
     BLOCK_TYPES.each do |block|
       define_method("class_for_#{block}") { |options| options.dig(block, :class) }
       define_method("data_for_#{block}") { |options| options.dig(block, :data) }
+      RENDERERS[block] = "render_#{block}_block".to_sym
     end
+
+    RENDERERS.freeze
 
     # Renders the block based on its type.
     # @param options [Hash] Additional options for rendering the block.
@@ -83,25 +88,6 @@ module NotionToHtml
       send(render_method, build_render_options(options))
     end
 
-    private
-
-    # Maps block types to their corresponding render methods
-    RENDERERS = {
-      'paragraph' => :render_paragraph_block,
-      'heading_1' => :render_heading_1_block,
-      'heading_2' => :render_heading_2_block,
-      'heading_3' => :render_heading_3_block,
-      'table_of_contents' => :render_table_of_contents_block,
-      'bulleted_list_item' => :render_bulleted_list_item_block,
-      'numbered_list_item' => :render_numbered_list_item_block,
-      'quote' => :render_quote_block,
-      'callout' => :render_callout_block,
-      'code' => :render_code_block,
-      'image' => :render_image_block,
-      'embed' => :render_image_block,
-      'video' => :render_video_block
-    }.freeze
-
     # Builds render options for a block type
     # @param options [Hash] The original options hash
     # @return [Hash] Processed options for rendering
@@ -109,8 +95,8 @@ module NotionToHtml
       {
         class: send("class_for_#{@type}", options),
         data: send("data_for_#{@type}", options),
-        **options.dig(@type)&.except(:class, :data).to_h
-      }
+        **options.with_indifferent_access.dig(@type)&.except(:class, :data).to_h
+      }.deep_symbolize_keys
     end
 
     def render_paragraph_block(options)
