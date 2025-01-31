@@ -16,7 +16,7 @@ end
 module NotionToHtml
   class Service
     class << self
-      def default_query(tag: nil, slug: nil)
+      def default_query(name: nil, description: nil, tag: nil, slug: nil)
         [
           {
             property: 'public',

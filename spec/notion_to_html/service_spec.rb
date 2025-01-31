@@ -209,6 +209,7 @@ RSpec.describe NotionToHtml::Service do
 
     context 'when an image block is not expired' do
       before do
+        allow(service).to receive(:refresh_video?)
         allow(service).to receive(:refresh_image?).and_return(false)
         allow(service).to receive(:refresh_block).and_call_original
       end
@@ -221,11 +222,38 @@ RSpec.describe NotionToHtml::Service do
 
     context 'when an image block has expired' do
       before do
+        allow(service).to receive(:refresh_video?)
         allow(ActiveSupport::TimeWithZone).to receive(:past?).and_return(true)
         allow(service).to receive(:refresh_block).and_call_original
       end
 
       it 'refreshes the block for the image ', vcr: { cassette_name: 'get_blocks' } do
+        subject
+        expect(service).to have_received(:refresh_block).once
+      end
+    end
+
+    context 'when an video block is not expired' do
+      before do
+        allow(service).to receive(:refresh_image?)
+        allow(service).to receive(:refresh_video?).and_return(false)
+        allow(service).to receive(:refresh_block).and_call_original
+      end
+
+      it 'does not refresh the block for the video', vcr: { cassette_name: 'get_blocks' } do
+        subject
+        expect(service).not_to have_received(:refresh_block)
+      end
+    end
+
+    context 'when an video block has expired' do
+      before do
+        allow(service).to receive(:refresh_image?)
+        allow(ActiveSupport::TimeWithZone).to receive(:past?).and_return(true)
+        allow(service).to receive(:refresh_block).and_call_original
+      end
+
+      it 'refreshes the block for the video ', vcr: { cassette_name: 'get_blocks' } do
         subject
         expect(service).to have_received(:refresh_block).once
       end
@@ -250,6 +278,27 @@ RSpec.describe NotionToHtml::Service do
     it 'returns false for non-image types' do
       data['type'] = 'text'
       expect(service.refresh_image?(data)).to be false
+    end
+  end
+
+  describe '#refresh_video?' do
+    let(:data) { { 'type' => 'video', 'video' => { 'type' => 'file', 'file' => { 'expiry_time' => expiry_time } } } }
+    let(:expired_data) do
+      { 'type' => 'video', 'video' => { 'type' => 'file', 'file' => { 'expiry_time' => (Time.now + 1.week).iso8601 } } }
+    end
+    let(:expiry_time) { (Time.now - 1.hour).iso8601 }
+
+    it 'returns true if the video has expired' do
+      expect(service.refresh_video?(data)).to be true
+    end
+
+    it 'returns false if the video has not expired' do
+      expect(service.refresh_video?(expired_data)).to be false
+    end
+
+    it 'returns false for non-video types' do
+      data['type'] = 'text'
+      expect(service.refresh_video?(data)).to be false
     end
   end
 end

@@ -111,7 +111,7 @@ module NotionToHtml
         parent_list_block_index = nil
         results = []
         blocks['results'].each_with_index do |block, index|
-          block = refresh_block(block['id']) if refresh_image?(block)
+          block = refresh_block(block['id']) if refresh_block?(block)
           base_block = NotionToHtml::BaseBlock.new(block)
           base_block.children = get_blocks(base_block.id) if base_block.has_children
           if %w[numbered_list_item].include? base_block.type
@@ -133,6 +133,13 @@ module NotionToHtml
         results
       end
 
+      # Determines if a block needs to be refreshed based on its type and expiry time
+      # @param block [Hash] The block data to check
+      # @return [Boolean] True if the block needs to be refreshed, false otherwise
+      def refresh_block?(block)
+        refresh_image?(block) || refresh_video?(block)
+      end
+
       # Determines if an image block needs to be refreshed based on its expiry time
       # @param data [Hash] The data of the image block
       # @return [Boolean] True if the image needs to be refreshed, false otherwise
@@ -141,6 +148,17 @@ module NotionToHtml
         return false unless data.dig('image', 'type') == 'file'
 
         expiry_time = data.dig('image', 'file', 'expiry_time')
+        expiry_time.to_datetime.past?
+      end
+
+      # Determines if a video block needs to be refreshed based on its expiry time
+      # @param data [Hash] The data of the video block
+      # @return [Boolean] True if the video needs to be refreshed, false otherwise
+      def refresh_video?(data)
+        return false unless data['type'] == 'video'
+        return false unless data.dig('video', 'type') == 'file'
+
+        expiry_time = data.dig('video', 'file', 'expiry_time')
         expiry_time.to_datetime.past?
       end
 
