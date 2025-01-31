@@ -111,7 +111,7 @@ module NotionToHtml
         parent_list_block_index = nil
         results = []
         blocks['results'].each_with_index do |block, index|
-          block = refresh_block(block['id']) if refresh_image?(block)
+          block = refresh_block(block['id']) if refresh_block?(block)
           base_block = NotionToHtml::BaseBlock.new(block)
           base_block.children = get_blocks(base_block.id) if base_block.has_children
           if %w[numbered_list_item].include? base_block.type
