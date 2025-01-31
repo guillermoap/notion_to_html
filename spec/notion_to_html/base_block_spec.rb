@@ -110,31 +110,224 @@ RSpec.describe NotionToHtml::BaseBlock do
         )
       )
     end
-    # can you create the test for each block type instead of doing it dynamically AI!
-    NotionToHtml::BaseBlock::BLOCK_TYPES.each do |block_type|
-      context "with #{block_type} block" do
-        let(:data) do
-          base_data.merge({
-            'type' => block_type.to_s,
-            block_type.to_s => {
-              'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
-            }
-          })
-        end
 
-        it "calls render_#{block_type}_block with correct options" do
-          block = described_class.new(data)
-          render_method = "render_#{block_type}_block"
+    context 'with paragraph block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'paragraph',
+          'paragraph' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
 
-          expect(block).to receive(render_method).with(
-            hash_including(
-              class: nil,
-              data: nil
-            )
-          )
+      it 'calls render_paragraph_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_paragraph_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
 
-          block.render
-        end
+    context 'with heading_1 block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'heading_1',
+          'heading_1' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
+
+      it 'calls render_heading_1_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_heading_1_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with heading_2 block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'heading_2',
+          'heading_2' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
+
+      it 'calls render_heading_2_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_heading_2_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with heading_3 block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'heading_3',
+          'heading_3' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
+
+      it 'calls render_heading_3_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_heading_3_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with bulleted_list_item block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'bulleted_list_item',
+          'bulleted_list_item' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
+
+      it 'calls render_bulleted_list_item_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_bulleted_list_item_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with numbered_list_item block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'numbered_list_item',
+          'numbered_list_item' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
+
+      it 'calls render_numbered_list_item_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_numbered_list_item_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with quote block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'quote',
+          'quote' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
+
+      it 'calls render_quote_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_quote_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with callout block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'callout',
+          'callout' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }]
+          }
+        })
+      end
+
+      it 'calls render_callout_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_callout_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with code block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'code',
+          'code' => {
+            'rich_text' => [{ 'text' => { 'content' => 'Test' } }],
+            'language' => 'ruby'
+          }
+        })
+      end
+
+      it 'calls render_code_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_code_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with image block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'image',
+          'image' => {
+            'type' => 'file',
+            'file' => {
+              'url' => 'https://example.com/image.jpg',
+              'expiry_time' => '2024-12-31T00:00:00.000Z'
+            },
+            'caption' => [{ 'text' => { 'content' => 'Test caption' } }]
+          }
+        })
+      end
+
+      it 'calls render_image_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_image_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
+      end
+    end
+
+    context 'with video block' do
+      let(:data) do
+        base_data.merge({
+          'type' => 'video',
+          'video' => {
+            'type' => 'file',
+            'file' => {
+              'url' => 'https://example.com/video.mp4',
+              'expiry_time' => '2024-12-31T00:00:00.000Z'
+            },
+            'caption' => [{ 'text' => { 'content' => 'Test caption' } }]
+          }
+        })
+      end
+
+      it 'calls render_video_block with correct options' do
+        block = described_class.new(data)
+        expect(block).to receive(:render_video_block).with(
+          hash_including(class: nil, data: nil)
+        )
+        block.render
       end
     end
   end
